@@ -1,7 +1,6 @@
 package com.finaxys.bigdata.training.batch;
 
 import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
@@ -12,7 +11,7 @@ import org.apache.spark.sql.SQLContext;
 import java.io.Serializable;
 import java.util.List;
 
-public class OrderAnalyzerRunner {
+public class OrderAnalyzerRunner implements Serializable {
 
     //Spark context should not be serializable.
     //It should always be defined in the driver after that the driver will create the executors with this context\
@@ -30,6 +29,8 @@ public class OrderAnalyzerRunner {
         //Creating an RDD from a text file. This RDD will contains String data
         JavaRDD<String> orders = ctxt.textFile("spark-batch/src/main/resources/order_data.csv");
 
+        SQLContext sqlContext = new SQLContext(ctxt);
+
         JavaRDD<Order> normalizedOrder = orders.map(new Function<String, Order>() {
             public Order call(String s) throws Exception {
                 Order order = new Order();
@@ -37,7 +38,6 @@ public class OrderAnalyzerRunner {
             }
         });
 
-        SQLContext sqlContext = new SQLContext(ctxt);
 
         //Creating Dataframe from the normalizedOrder RDD, and with the schema acquired form the Java Bean Order
         DataFrame ordersDF = sqlContext.createDataFrame(normalizedOrder, Order.class);
@@ -48,7 +48,7 @@ public class OrderAnalyzerRunner {
         //Doing some analyzing is as easy as calling Sql on the recently added table
         // The results of Sql queries applied to a DataFrame is saved as DataFrame.
         DataFrame googOrders = sqlContext.sql("SELECT * FROM orders WHERE orderbook=\"GOOG\" ");
-        List<Object> results =  googOrders.javaRDD().map(new Function<Row, Object>() {
+        List<Object> results = googOrders.javaRDD().map(new Function<Row, Object>() {
             public Object call(Row row) throws Exception {
                 return row;
             }
