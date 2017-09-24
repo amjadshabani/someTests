@@ -3,3 +3,4 @@ metastore/
 build/
 .idea/
 **/*.class
+**/*.log
