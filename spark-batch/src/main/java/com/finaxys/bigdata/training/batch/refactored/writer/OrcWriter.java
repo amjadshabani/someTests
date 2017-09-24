@@ -5,19 +5,26 @@ import com.finaxys.bigdata.training.batch.refactored.ProjectConfiguration;
 import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.SaveMode;
 
-public class OrcWriter extends AbstractWriter{
+public class OrcWriter extends AbstractWriter {
     private final ProjectConfiguration config = ProjectConfiguration.getInstance();
+
     @Override
     public void write() {
 
     }
 
     /**
-     * This will write the dataframe into ORC file
+     * Write the dataframe into ORC file
+     *
      * @param df
      */
     @Override
     public void write(DataFrame df) {
-        df.write().mode(SaveMode.Overwrite).format("orc").saveAsTable(config.outputTable);
+        df.write().mode(SaveMode.Overwrite).format("orc").save(config.getOutputFile());
+    }
+
+    @Override
+    public void writeAsTable(DataFrame df) {
+        df.write().mode(SaveMode.Overwrite).format("orc").saveAsTable(config.getOutputTable());
     }
 }

@@ -20,7 +20,7 @@ public class OrderAnalyzerRunner implements Serializable {
     transient static JavaSparkContext ctxt;
 
     public static void main(String[] args) {
-        // wrong configuration since we hadrd coded the master. Master should be left to the phase when we run the application
+        // wrong configuration since we hard coded the master. Master should be left to the phase when we run the application
         SparkConf conf = new SparkConf().setAppName("SparkWithDataFrame")
                 .setMaster("local[*]");
 

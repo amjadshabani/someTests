@@ -7,7 +7,7 @@ public class WriterFactory {
     ProjectConfiguration config = ProjectConfiguration.getInstance();
 
     public AbstractWriter getWriter() {
-        String writerType = config.writer;
+        String writerType = config.getWriterType();
         if (writerType.toLowerCase().equals("orc")) {
             return new OrcWriter();
 
@@ -15,6 +15,5 @@ public class WriterFactory {
             return new FileWriter();
         } else
             throw new IllegalArgumentException("Unsupported writer type: " + writerType);
-
     }
 }
