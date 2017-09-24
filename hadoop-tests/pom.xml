@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>white-app</artifactId>
@@ -69,26 +69,26 @@
             <artifactId>org.apache.logging.log4j</artifactId>
         </dependency>
 
-      <!--  <dependency>
-            <groupId>org.apache.hive</groupId>
-            <artifactId>hive-jdbc</artifactId>
-            <version>1.2.1</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>datanucleus-core</artifactId>
-                    <groupId>org.datanaucleus</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>datanucleus-api-jdo</artifactId>
-                    <groupId>org.datanaucleus</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>datanucleus-rdbms</artifactId>
-                    <groupId>org.datanaucleus</groupId>
-                </exclusion>
+        <!--  <dependency>
+              <groupId>org.apache.hive</groupId>
+              <artifactId>hive-jdbc</artifactId>
+              <version>1.2.1</version>
+              <exclusions>
+                  <exclusion>
+                      <artifactId>datanucleus-core</artifactId>
+                      <groupId>org.datanaucleus</groupId>
+                  </exclusion>
+                  <exclusion>
+                      <artifactId>datanucleus-api-jdo</artifactId>
+                      <groupId>org.datanaucleus</groupId>
+                  </exclusion>
+                  <exclusion>
+                      <artifactId>datanucleus-rdbms</artifactId>
+                      <groupId>org.datanaucleus</groupId>
+                  </exclusion>
 
-            </exclusions>
-        </dependency>-->
+              </exclusions>
+          </dependency>-->
 
     </dependencies>
 

@@ -1,11 +1,8 @@
 package com.finaxys.bigdata.hadooptests.datawriters;
 
 import com.finaxys.bigdata.hadooptests.helpers.MiniCluster;
-import java.sql.SQLException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.DriverManager;
+
+import java.sql.*;
 
 public class HiveWriter {
 
@@ -13,7 +10,7 @@ public class HiveWriter {
 
     private static String driverName = "org.apache.hive.jdbc.HiveDriver";
 
-    public static void insertIntoHive() throws SQLException{
+    public static void insertIntoHive() throws SQLException {
         minicluster.start();
         // To make sure the the mini cluster is up and all the tcp channels are up
         try {

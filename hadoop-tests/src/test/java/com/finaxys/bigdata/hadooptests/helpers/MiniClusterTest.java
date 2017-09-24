@@ -13,7 +13,7 @@ public class MiniClusterTest extends TestCase {
     }
 
     @Test
-    public void testHBase () throws Exception{
+    public void testHBase() throws Exception {
         HbaseLocalCluster hbaseLocalCluster = new HbaseLocalCluster.Builder()
                 .setHbaseMasterPort(25111)
                 .setHbaseMasterInfoPort(-1)
@@ -25,12 +25,12 @@ public class MiniClusterTest extends TestCase {
                 .setHbaseWalReplicationEnabled(false)
                 .setHbaseConfiguration(new Configuration())
                 .activeRestGateway()
-                    .setHbaseRestHost("localhost")
-                    .setHbaseRestPort(28000)
-                    .setHbaseRestReadOnly(false)
-                    .setHbaseRestThreadMax(100)
-                    .setHbaseRestThreadMin(2)
-                    .build()
+                .setHbaseRestHost("localhost")
+                .setHbaseRestPort(28000)
+                .setHbaseRestReadOnly(false)
+                .setHbaseRestThreadMax(100)
+                .setHbaseRestThreadMin(2)
+                .build()
                 .build();
         hbaseLocalCluster.start();
         hbaseLocalCluster.stop(true);

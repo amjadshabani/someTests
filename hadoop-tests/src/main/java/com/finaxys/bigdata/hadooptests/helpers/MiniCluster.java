@@ -12,33 +12,26 @@ import java.util.TreeMap;
 
 public class MiniCluster {
 
-    public static Logger logger = Logger.getLogger(MiniCluster.class);
-
-
-    // just used internally in the class:
-    // to register the configured services
-    private static SortedMap<Integer, com.github.sakserv.minicluster.MiniCluster> registeredServices =
-            new TreeMap<Integer, com.github.sakserv.minicluster.MiniCluster>();
-
     //HDFS Global values
     public static final Integer NAMENODE_PORT = 12345;
     public static final Integer NAMENODE_HTTP_PORT = 12341;
     //Yarn global values
-    public static final String RM_ADDRESS =  "localhost:37001";
+    public static final String RM_ADDRESS = "localhost:37001";
     public static final String RM_HOSTNAME = "localhost";
     public static final String RM_SCHEDULER_ADDRESS = "localhost:37002";
     public static final String RM_RESSOURCE_TRACKER_ADDRESS = "localhost:37003";
     public static final String RM_WEBAPP_ADDRESS = "localhost:37004";
-
     //HiveServer global values
     public static final Integer HS2_PORT = 12348;
     public static final Integer HIVE_METASTORE_PORT = 12347;
-
     //Zookeeper global values
     public static final String ZK_CONNECTION_STRING = "localhost:54321";
     public static final Integer ZK_PORT = 54321;
-
-
+    public static Logger logger = Logger.getLogger(MiniCluster.class);
+    // just used internally in the class:
+    // to register the configured services
+    private static SortedMap<Integer, com.github.sakserv.minicluster.MiniCluster> registeredServices =
+            new TreeMap<Integer, com.github.sakserv.minicluster.MiniCluster>();
     // let's define all the clusters that could be used in our tests
     private HdfsLocalCluster hdfsLocalCluster;
     private HiveLocalServer2 hiveLocalServer2;
@@ -46,6 +39,15 @@ public class MiniCluster {
     private HbaseLocalCluster hbaseLocalCluster;
     private YarnLocalCluster yarnLocalCluster;
     private KafkaLocalBroker kafkaLocalBroker;
+
+    public MiniCluster(Builder builder) {
+        this.hdfsLocalCluster = builder.hdfsLocalCluster;
+        this.hiveLocalServer2 = builder.hiveLocalServer2;
+        this.hiveLocalMetaStore = builder.hiveLocalMetaStore;
+        this.hbaseLocalCluster = builder.hbaseLocalCluster;
+        this.yarnLocalCluster = builder.yarnLocalCluster;
+        this.kafkaLocalBroker = builder.kafkaLocalBroker;
+    }
 
     public HdfsLocalCluster getHdfsLocalCluster() {
         return hdfsLocalCluster;
@@ -71,22 +73,13 @@ public class MiniCluster {
         return kafkaLocalBroker;
     }
 
-    public MiniCluster(Builder builder) {
-        this.hdfsLocalCluster = builder.hdfsLocalCluster;
-        this.hiveLocalServer2 = builder.hiveLocalServer2;
-        this.hiveLocalMetaStore = builder.hiveLocalMetaStore;
-        this.hbaseLocalCluster = builder.hbaseLocalCluster;
-        this.yarnLocalCluster = builder.yarnLocalCluster;
-        this.kafkaLocalBroker = builder.kafkaLocalBroker;
-    }
-
     /**
      * Starting the defined instances, if the instance is not instantiated it will not be started
      */
     public void start() {
         logger.info("Starting the services in minicluster");
         //Make sure that there is registered services
-        if (registeredServices.entrySet().size() == 0 )
+        if (registeredServices.entrySet().size() == 0)
             throw new IllegalArgumentException("There is no registered services. There should be at least one registered serrvice for minicluster to start");
 
         //The order of starting services:
@@ -97,11 +90,10 @@ public class MiniCluster {
         // 5. HiveServer
         // 6. Kafka
         // 7. HBase
-        for(SortedMap.Entry<Integer, com.github.sakserv.minicluster.MiniCluster> entry : registeredServices.entrySet()) {
+        for (SortedMap.Entry<Integer, com.github.sakserv.minicluster.MiniCluster> entry : registeredServices.entrySet()) {
             try {
                 entry.getValue().start();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 logger.error("Some services won't start, check the stack trace");
 
             }
@@ -109,11 +101,10 @@ public class MiniCluster {
     }
 
     public void stop() {
-        for(SortedMap.Entry<Integer, com.github.sakserv.minicluster.MiniCluster> entry : registeredServices.entrySet()) {
+        for (SortedMap.Entry<Integer, com.github.sakserv.minicluster.MiniCluster> entry : registeredServices.entrySet()) {
             try {
                 entry.getValue().stop();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 logger.error("Some services couldn' be stopped gracefully, check the stack trace. Please try to stop them");
 
             }
@@ -133,7 +124,7 @@ public class MiniCluster {
         private ZookeeperLocalCluster zookeeperLocalCluster;
 
         private synchronized ZookeeperLocalCluster getZookeeperLocalClusterInstance() {
-            if (this.zookeeperLocalCluster ==null) {
+            if (this.zookeeperLocalCluster == null) {
                 zookeeperLocalCluster = new ZookeeperLocalCluster.Builder()
                         .setPort(ZK_PORT)
                         .setTempDir("embedded_zookeeper")
@@ -167,7 +158,7 @@ public class MiniCluster {
                     .setHdfsFormat(true)
                     .setHdfsEnableRunningUserAsProxyUser(true)
                     .build();
-            registerService(hdfsLocalCluster,1);
+            registerService(hdfsLocalCluster, 1);
 
             return this;
         }
@@ -189,6 +180,7 @@ public class MiniCluster {
             return this;
 
         }
+
         public Builder withHiveMetastore() {
             hiveLocalMetaStore = new HiveLocalMetaStore.Builder()
                     .setHiveMetastoreHostname("localhost")
@@ -254,12 +246,12 @@ public class MiniCluster {
                     .setHbaseWalReplicationEnabled(false)
                     .setHbaseConfiguration(new Configuration())
                     .activeRestGateway()
-                        .setHbaseRestHost("localhost")
-                        .setHbaseRestPort(28000)
-                        .setHbaseRestReadOnly(false)
-                        .setHbaseRestThreadMax(100)
-                        .setHbaseRestThreadMin(2)
-                        .build()
+                    .setHbaseRestHost("localhost")
+                    .setHbaseRestPort(28000)
+                    .setHbaseRestReadOnly(false)
+                    .setHbaseRestThreadMax(100)
+                    .setHbaseRestThreadMin(2)
+                    .build()
                     .build();
             registerService(hbaseLocalCluster, 7);
             return this;
