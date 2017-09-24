@@ -1,0 +1,3 @@
+hdfs dfs -mkdir /user/ch1dev42/hive-training/
+
+hdfs dfs -put ./generated-data/orders.csv /user/ch1dev42/hive-training/

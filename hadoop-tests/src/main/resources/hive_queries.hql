@@ -1,0 +1,15 @@
+
+
+CREATE EXTERNAL TABLE dev_appl_ch1_fdr.orders_ext (
+M_TYPE STRING,
+ORDERBOOK STRING,
+SENDER STRING,
+EXTID STRING,
+nature STRING,
+DIR CHAR(1),
+price INT,
+QUANTITY INT,
+ validity INT
+ )
+ ROW FORMAT DELIMITED FIELDS TERMINATED BY ';'
+    LOCATION '/user/ch1dev42/hive-training';
