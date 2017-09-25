@@ -21,14 +21,14 @@ public class OrderAnalyzerRunner implements Serializable {
 
     //Here when creating the config oobject , we do not set the spark master, so it will be provided in the spark-submit
     // to run the application in the IDE we edit the Run Configuration and set the VN option -Dspark.master=local[2]
-    SparkConf conf = new SparkConf().setAppName(projectConfiguration.getAppName());
-    JavaSparkContext jsc = SparkHelpers.getJavaSparkContext(conf);
-    SQLContext sqlContext = SparkHelpers.getSqlContext();
+    transient SparkConf conf = new SparkConf().setAppName(projectConfiguration.getAppName());
+    transient JavaSparkContext jsc = SparkHelpers.getJavaSparkContext(conf);
+    transient SQLContext sqlContext = SparkHelpers.getSqlContext();
 
     // In order to use ORC format we need to use HiveContext instead of SQLContext
     // HiveContext is a superset of SQLContext, so it contains all the functionality of SQLContext and adds the Hive support to it
     // When Initializing HiveContext, there is no need to connect to hive server
-    HiveContext hiveContext = SparkHelpers.getHiveContext();
+    transient HiveContext hiveContext = SparkHelpers.getHiveContext();
 
 
     OrderReader reader = new OrderReader();
