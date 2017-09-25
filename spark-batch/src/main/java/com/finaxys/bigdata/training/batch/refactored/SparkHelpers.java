@@ -8,7 +8,7 @@ import org.apache.spark.sql.hive.HiveContext;
 import java.util.Properties;
 
 /**
- * Hepler classes to get the contexts from
+ * Helper classes to get the contexts from
  */
 public class SparkHelpers {
     private transient static JavaSparkContext jsc;
@@ -48,8 +48,8 @@ public class SparkHelpers {
         return sqlContext;
     }
 
-    // In case we want to pass the spark configuration from another file than the defaul spark.defaults,
-    // we can spicify some system properties or properties file and loaded into Spark conf object
+    // In case we want to pass the spark configuration from another file than the default spark.defaults,
+    // we can specify some system properties or properties file and loaded into Spark conf object
     public static void configureSparkContext(Properties properties) {
 
     }

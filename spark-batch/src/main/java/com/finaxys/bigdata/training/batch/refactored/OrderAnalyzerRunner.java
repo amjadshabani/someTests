@@ -34,14 +34,14 @@ public class OrderAnalyzerRunner {
 
     public static void main(String[] args) {
         OrderAnalyzerRunner runner = new OrderAnalyzerRunner();
-        logger.info("Application Started with the following configurtion " + runner.projectConfiguration.toString());
+        logger.info("Application Started with the following configuration " + runner.projectConfiguration.toString());
 
         runner.runAnalyzer();
     }
 
     public void runAnalyzer() {
-        //for the sake of obviousity we keept the reader class as a helper class,
-        // so the reader will see what is happening
+        //for the sake of simplicity we kept the reader class as a helper class,
+        // so the code reader will see what is happening
         //In real coding, the logic of reading should be done in the reader class, from a raw file to Data frame
 
         logger.info("Start reading raw file");
