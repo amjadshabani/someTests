@@ -17,14 +17,18 @@ public class OrderAnalyzerRunner implements Serializable {
 
     public static final Logger logger = Logger.getLogger(OrderAnalyzerRunner.class);
 
-    ProjectConfiguration projectConfiguration = ProjectConfiguration.getInstance();
+    ProjectConfiguration projectConfiguration;
 
-    //Here when creating the config oobject , we do not set the spark master, so it will be provided in the spark-submit
-    // to run the application in the IDE we edit the Run Configuration and set the VN option -Dspark.master=local[2]
-    transient SparkConf conf = new SparkConf().setAppName(projectConfiguration.getAppName());
+    transient SparkConf conf;
+
+    public OrderAnalyzerRunner(ProjectConfiguration projectConfiguration, SparkConf conf, JavaSparkContext jsc, HiveContext hiveContext) {
+        this.projectConfiguration = projectConfiguration;
+        this.conf = conf;
+        this.jsc = jsc;
+        this.hiveContext = hiveContext;
+    }
+
     transient JavaSparkContext jsc = SparkHelpers.getJavaSparkContext(conf);
-    transient SQLContext sqlContext = SparkHelpers.getSqlContext();
-
     // In order to use ORC format we need to use HiveContext instead of SQLContext
     // HiveContext is a superset of SQLContext, so it contains all the functionality of SQLContext and adds the Hive support to it
     // When Initializing HiveContext, there is no need to connect to hive server
@@ -34,8 +38,23 @@ public class OrderAnalyzerRunner implements Serializable {
     OrderReader reader = new OrderReader();
     AbstractWriter writer = new OrcWriter();
 
-    public static void main(String[] args) {
-        OrderAnalyzerRunner runner = new OrderAnalyzerRunner();
+    public static void main(String[] args) throws Exception {
+        ProjectConfiguration projectConfiguration = ProjectConfiguration.getInstance(args);
+
+        //Here when creating the config oobject , we do not set the spark master, so it will be provided in the spark-submit
+        // to run the application in the IDE we edit the Run Configuration and set the VN option -Dspark.master=local[2]
+        SparkConf conf = new SparkConf().setAppName(projectConfiguration.getAppName());
+        JavaSparkContext jsc = SparkHelpers.getJavaSparkContext(conf);
+
+        SQLContext sqlContext = SparkHelpers.getSqlContext();
+
+        // In order to use ORC format we need to use HiveContext instead of SQLContext
+        // HiveContext is a superset of SQLContext, so it contains all the functionality of SQLContext and adds the Hive support to it
+        // When Initializing HiveContext, there is no need to connect to hive server
+        HiveContext hiveContext = SparkHelpers.getHiveContext();
+
+        OrderAnalyzerRunner runner = new OrderAnalyzerRunner(projectConfiguration, conf, jsc, hiveContext);
+
         logger.info("Application Started with the following configuration " + runner.projectConfiguration.toString());
 
         runner.runAnalyzer();
@@ -49,7 +68,6 @@ public class OrderAnalyzerRunner implements Serializable {
         logger.info("Start reading raw file");
         JavaRDD<String> orders = reader.readInputFile(jsc, projectConfiguration.getFileLocation());
 
-
         //The rdd orders will still be in use; so it is usefull for optimization to cache it
         orders.cache();
 
@@ -58,7 +76,7 @@ public class OrderAnalyzerRunner implements Serializable {
         JavaRDD<Order> normalizedOrders = reader.normalizeOrders(orders);
 
         logger.info("creating datafrrame and register it to a table");
-        DataFrame ordersDF = hiveContext.createDataFrame(normalizedOrders,Order.class);
+        DataFrame ordersDF = hiveContext.createDataFrame(normalizedOrders, Order.class);
 
 
         //the table name is the same is the output table name of the writer (could be different but just to keep track of naming)
@@ -71,7 +89,7 @@ public class OrderAnalyzerRunner implements Serializable {
 
         //write data frame to a table;
         logger.info("Write the result data to ORC files");
-        writer.write(results);
+        writer.write(results, projectConfiguration.getOutputFile());
     }
 
 }

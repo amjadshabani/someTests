@@ -4,10 +4,7 @@ import com.finaxys.bigdata.training.batch.refactored.ProjectConfiguration;
 
 public class WriterFactory {
 
-    ProjectConfiguration config = ProjectConfiguration.getInstance();
-
-    public AbstractWriter getWriter() {
-        String writerType = config.getWriterType();
+    public AbstractWriter getWriter(String writerType) {
         if (writerType.toLowerCase().equals("orc")) {
             return new OrcWriter();
 

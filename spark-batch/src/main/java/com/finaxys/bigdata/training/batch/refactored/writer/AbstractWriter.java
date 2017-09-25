@@ -6,9 +6,6 @@ import org.apache.spark.sql.DataFrame;
 import java.io.Serializable;
 
 public abstract class AbstractWriter implements Serializable {
-
-    ProjectConfiguration config = ProjectConfiguration.getInstance();
-
     /**
      * write results from rdd to a destination defined in the implementation classes
      */
@@ -19,13 +16,13 @@ public abstract class AbstractWriter implements Serializable {
      *
      * @param df
      */
-    abstract public void write(DataFrame df);
+    abstract public void write(DataFrame df, String outputFile);
 
     /**
      * Write the dataframe to a table
      *
      * @param df
      */
-    abstract public void writeAsTable(DataFrame df);
+    abstract public void writeAsTable(DataFrame df, String outputTable);
 
 }

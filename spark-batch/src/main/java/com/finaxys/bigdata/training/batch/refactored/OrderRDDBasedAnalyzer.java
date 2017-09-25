@@ -17,16 +17,26 @@ import java.io.Serializable;
  *
  */
 public class OrderRDDBasedAnalyzer implements Serializable {
+    public OrderRDDBasedAnalyzer(ProjectConfiguration projectConfiguration, SparkConf conf, JavaSparkContext jsc) {
+        this.projectConfiguration = projectConfiguration;
+        this.conf = conf;
+        this.jsc = jsc;
+    }
 
-    ProjectConfiguration projectConfiguration = ProjectConfiguration.getInstance();
+    ProjectConfiguration projectConfiguration;
 
-    transient SparkConf conf = new SparkConf().setAppName(projectConfiguration.getAppName());
-    transient private JavaSparkContext jsc = SparkHelpers.getJavaSparkContext(conf);
+    transient SparkConf conf;
+    transient private JavaSparkContext jsc;
 
     OrderReader reader = new OrderReader();
 
-    public static void main(String[] args) {
-        OrderRDDBasedAnalyzer analyzer = new OrderRDDBasedAnalyzer();
+    public static void main(String[] args) throws Exception {
+        ProjectConfiguration projectConfiguration = ProjectConfiguration.getInstance(args);
+
+        SparkConf conf = new SparkConf().setAppName(projectConfiguration.getAppName());
+        JavaSparkContext jsc = SparkHelpers.getJavaSparkContext(conf);
+
+        OrderRDDBasedAnalyzer analyzer = new OrderRDDBasedAnalyzer(projectConfiguration, conf, jsc);
         analyzer.analyze();
 
     }

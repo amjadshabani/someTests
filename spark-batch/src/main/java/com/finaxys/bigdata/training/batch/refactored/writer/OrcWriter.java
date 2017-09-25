@@ -8,7 +8,6 @@ import org.apache.spark.sql.SaveMode;
 import java.io.Serializable;
 
 public class OrcWriter extends AbstractWriter implements Serializable {
-    private final ProjectConfiguration config = ProjectConfiguration.getInstance();
 
     @Override
     public void write() {
@@ -21,12 +20,12 @@ public class OrcWriter extends AbstractWriter implements Serializable {
      * @param df
      */
     @Override
-    public void write(DataFrame df) {
-        df.write().mode(SaveMode.Overwrite).format("orc").save(config.getOutputFile());
+    public void write(DataFrame df, String outputFile) {
+        df.write().mode(SaveMode.Overwrite).format("orc").save(outputFile);
     }
 
     @Override
-    public void writeAsTable(DataFrame df) {
-        df.write().mode(SaveMode.Overwrite).format("orc").saveAsTable(config.getOutputTable());
+    public void writeAsTable(DataFrame df, String outputTable) {
+        df.write().mode(SaveMode.Overwrite).format("orc").saveAsTable(outputTable);
     }
 }

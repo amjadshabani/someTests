@@ -12,13 +12,13 @@ public class FileWriter extends AbstractWriter {
     }
 
     @Override
-    public void write(DataFrame df) {
-        df.write().mode(SaveMode.Overwrite).format("text").save(config.getOutputFile());
+    public void write(DataFrame df, String outputFile) {
+        df.write().mode(SaveMode.Overwrite).format("text").save(outputFile);
 
     }
 
     @Override
-    public void writeAsTable(DataFrame df) {
-        df.write().mode(SaveMode.Overwrite).format("text").saveAsTable(config.getOutputTable());
+    public void writeAsTable(DataFrame df, String OutputTable) {
+        df.write().mode(SaveMode.Overwrite).format("text").saveAsTable(OutputTable);
     }
 }
