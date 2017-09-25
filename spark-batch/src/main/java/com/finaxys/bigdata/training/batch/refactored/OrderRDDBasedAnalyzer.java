@@ -20,12 +20,14 @@ public class OrderRDDBasedAnalyzer implements Serializable {
 
     ProjectConfiguration projectConfiguration = ProjectConfiguration.getInstance();
 
-    SparkConf conf = new SparkConf().setAppName(projectConfiguration.getAppName());
-    private JavaSparkContext jsc = SparkHelpers.getJavaSparkContext(conf);
+    transient SparkConf conf = new SparkConf().setAppName(projectConfiguration.getAppName());
+    transient private JavaSparkContext jsc = SparkHelpers.getJavaSparkContext(conf);
 
     OrderReader reader = new OrderReader();
 
     public static void main(String[] args) {
+        OrderRDDBasedAnalyzer analyzer = new OrderRDDBasedAnalyzer();
+        analyzer.analyze();
 
     }
 
@@ -36,6 +38,8 @@ public class OrderRDDBasedAnalyzer implements Serializable {
         //Getting the RDD we should analyze the RDD into Order objects
         JavaRDD<Order> normalizedOrderRDD = ordersRawRDD.map(line -> new Order().toOrder(line));
 
+        normalizedOrderRDD.cache();
+
         //Let' get the key of grouping by statement, in our case it is orderbook
         //The results of the following transformation is a tuple of <ORDERBOOK, 1>
         JavaPairRDD<String, Integer> keyedOrder = normalizedOrderRDD.mapToPair(new PairFunction<Order, String, Integer>() {
@@ -44,10 +48,11 @@ public class OrderRDDBasedAnalyzer implements Serializable {
                 return new Tuple2<String, Integer>(order.getOrderbook(), Integer.valueOf(1));
             }
         });
-        //We could use Lambda expression in the previous transformation.
+
+        // We could have used Lambda expression in the previous transformation.
         // But for the sake of demonstration, we chose to go with the Function2 interface
         // We can do that in Lambda expression as the following:
-//        JavaPairRDD<String, Integer> test =
+//        JavaPairRDD<String, Integer> keyedOrder =
 //                normalizedOrderRDD.mapToPair(order ->
 //                {return new Tuple2<String, Integer>(order.getOrderbook(),Integer.valueOf(1));});
 
@@ -62,7 +67,7 @@ public class OrderRDDBasedAnalyzer implements Serializable {
             }
         });
 
-
+        countPerGroup.saveAsTextFile(projectConfiguration.getOutputFile() + "/rddbased/");
     }
 
 }
