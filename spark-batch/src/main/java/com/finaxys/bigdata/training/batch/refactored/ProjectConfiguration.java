@@ -23,7 +23,7 @@ public class ProjectConfiguration implements Serializable {
      * In real use case those configuration should be taken from outer source like a configuration file.
      */
     private ProjectConfiguration() {
-        fileLocation = "/tmp/orders.csv";
+        fileLocation = "spark-batch/src/main/resources/orders_data.csv";
         configuration = "";
         writerType = "orc";
         outputTable = "results";

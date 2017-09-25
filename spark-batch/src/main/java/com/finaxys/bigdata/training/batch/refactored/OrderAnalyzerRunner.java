@@ -9,6 +9,7 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.SQLContext;
+import org.apache.spark.sql.hive.HiveContext;
 
 public class OrderAnalyzerRunner {
 
@@ -21,6 +22,11 @@ public class OrderAnalyzerRunner {
     SparkConf conf = new SparkConf().setAppName(projectConfiguration.getAppName());
     JavaSparkContext jsc = SparkHelpers.getJavaSparkContext(conf);
     SQLContext sqlContext = SparkHelpers.getSqlContext();
+
+    // In order to use ORC format we need to use HiveContext instead of SQLContext
+    // HiveContext is a superset of SQLContext, so it contains all the functionality of SQLContext and adds the Hive support to it
+    // When Initializing HiveContext, there is no need to connect to hive server
+    HiveContext hiveContext = SparkHelpers.getHiveContext();
 
 
     OrderReader reader = new OrderReader();
@@ -50,7 +56,8 @@ public class OrderAnalyzerRunner {
         JavaRDD<Order> normalizedOrders = reader.normalizeOrders(orders);
 
         logger.info("creating datafrrame and register it to a table");
-        DataFrame ordersDF = sqlContext.createDataFrame(normalizedOrders, Order.class);
+        DataFrame ordersDF = hiveContext.createDataFrame(normalizedOrders,Order.class);
+
 
         //the table name is the same is the output table name of the writer (could be different but just to keep track of naming)
         String tableName = projectConfiguration.getOutputTable();
@@ -58,7 +65,7 @@ public class OrderAnalyzerRunner {
 
         //Do some sql
         logger.info("Analyze the data, count per each order book");
-        DataFrame results = sqlContext.sql("SELECT orderbook,COUNT(*) FROM " + tableName + " group by orderbook");
+        DataFrame results = hiveContext.sql("SELECT orderbook,COUNT(*) FROM " + tableName + " group by orderbook");
 
         //write data frame to a table;
         logger.info("Write the result data to ORC files");

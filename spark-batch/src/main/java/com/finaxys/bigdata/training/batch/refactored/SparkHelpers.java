@@ -3,6 +3,7 @@ package com.finaxys.bigdata.training.batch.refactored;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.SQLContext;
+import org.apache.spark.sql.hive.HiveContext;
 
 import java.util.Properties;
 
@@ -12,6 +13,7 @@ import java.util.Properties;
 public class SparkHelpers {
     private transient static JavaSparkContext jsc;
     private transient static SQLContext sqlContext;
+    private transient static HiveContext hiveContext;
 
     public static synchronized JavaSparkContext getJavaSparkContext(SparkConf conf) {
         if (jsc == null) {
@@ -40,7 +42,7 @@ public class SparkHelpers {
      */
     public static SQLContext getSqlContext() {
         if (jsc == null)
-            throw new IllegalArgumentException("Spark context is not initilaized yet, you have to initialize it before using this method");
+            throw new IllegalArgumentException("Spark context is not initialized yet, you have to initialize it before using this method");
         if (sqlContext == null)
             sqlContext = new SQLContext(jsc);
         return sqlContext;
@@ -50,5 +52,13 @@ public class SparkHelpers {
     // we can spicify some system properties or properties file and loaded into Spark conf object
     public static void configureSparkContext(Properties properties) {
 
+    }
+
+    public static HiveContext getHiveContext() {
+        if (jsc == null)
+            throw new IllegalArgumentException("Spark context is not initialized yet, you have to initialize it before using this method");
+        if (hiveContext == null)
+            hiveContext = new HiveContext(jsc.sc());
+        return hiveContext;
     }
 }
