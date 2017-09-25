@@ -5,7 +5,9 @@ import com.finaxys.bigdata.training.batch.refactored.ProjectConfiguration;
 import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.SaveMode;
 
-public class OrcWriter extends AbstractWriter {
+import java.io.Serializable;
+
+public class OrcWriter extends AbstractWriter implements Serializable {
     private final ProjectConfiguration config = ProjectConfiguration.getInstance();
 
     @Override

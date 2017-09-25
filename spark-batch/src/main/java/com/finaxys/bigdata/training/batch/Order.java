@@ -1,9 +1,11 @@
 package com.finaxys.bigdata.training.batch;
 
+import java.io.Serializable;
+
 /**
  * Class representing orders data. It will be used by Spark Dataframe to get the schema from reflection
  */
-public class Order {
+public class Order implements Serializable {
     private String type;
     private String orderbook;
     private String sender;

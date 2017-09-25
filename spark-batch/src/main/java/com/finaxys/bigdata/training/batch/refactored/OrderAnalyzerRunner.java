@@ -11,7 +11,9 @@ import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.SQLContext;
 import org.apache.spark.sql.hive.HiveContext;
 
-public class OrderAnalyzerRunner {
+import java.io.Serializable;
+
+public class OrderAnalyzerRunner implements Serializable {
 
     public static final Logger logger = Logger.getLogger(OrderAnalyzerRunner.class);
 
